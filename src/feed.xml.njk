@@ -18,6 +18,12 @@ date: 2026-04-14
     <id>{{ site.siteUrl }}{{ post.url }}</id>
     <updated>{{ post.data.date | isoDate }}</updated>
     <summary>{{ post.data.description | e }}</summary>
+    {% if post.data.author %}
+    <author>
+      <name>{{ post.data.author | e }}</name>
+      {% if post.data.authorLinkedIn %}<uri>{{ post.data.authorLinkedIn | e }}</uri>{% endif %}
+    </author>
+    {% endif %}
   </entry>
   {% endfor %}
 </feed>

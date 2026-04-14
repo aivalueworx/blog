@@ -36,11 +36,19 @@ Create or edit `.md` files in **`vault-shared/published/blog/`** (open `vault-sh
 title: "Post title"
 description: "Short line for cards and RSS."
 date: 2026-04-14
-author: "Your Name"
+author: "Peter Abraham"
+authorLinkedIn: "https://www.linkedin.com/in/your-profile/"
 tags:
   - ai-strategy
 ---
 ```
+
+| Field | Required | Notes |
+|-------|----------|--------|
+| `author` | No | Shown as **Author:** under the date on the post. |
+| `authorLinkedIn` | No | Full `https://www.linkedin.com/in/...` URL. If set, the author name links to LinkedIn; if omitted, the name is plain text. |
+
+Replace the sample `authorLinkedIn` values in `published/blog/*.md` with each author’s real LinkedIn profile URL.
 
 Optional: set `permalink` yourself; otherwise URLs are `/blog/<filename-without-ext>/` (e.g. `welcome.md` → `/blog/welcome/`).
 

@@ -6,7 +6,10 @@ layout: blog-base.njk
   <header class="post-header glass-panel">
     <p class="kicker">Article</p>
     <h1>{{ title }}</h1>
-    <p class="post-meta">{{ date | dateString }}{% if author %} · {{ author }}{% endif %} · {{ content | readTime }}</p>
+    <p class="post-meta post-meta-line">{{ date | dateString }} · {{ content | readTime }}</p>
+    {% if author %}
+    <p class="post-author-line">Author: {% if authorLinkedIn %}<a href="{{ authorLinkedIn }}" rel="noopener noreferrer" target="_blank">{{ author }}</a>{% else %}{{ author }}{% endif %}</p>
+    {% endif %}
   </header>
   <div class="prose">
     {{ content | safe }}

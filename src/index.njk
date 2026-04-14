@@ -1,0 +1,27 @@
+---
+layout: blog-base.njk
+title: "AIValueWorx Blog"
+description: "Insights on AI strategy, governance, and measured business impact."
+permalink: /
+eleventyExcludeFromCollections: true
+---
+
+<section class="blog-hero">
+  <p class="kicker">Insights</p>
+  <h1>From ambiguity to impact</h1>
+  <p class="lead">{{ site.description }}</p>
+</section>
+
+{% if collections.posts.length %}
+<section class="post-grid" aria-label="Blog posts">
+  {% for post in collections.posts %}
+  <a href="{{ post.url }}" class="post-card">
+    <div class="date">{{ post.data.date | dateString }}</div>
+    <h2>{{ post.data.title }}</h2>
+    <p class="excerpt">{{ post.data.description }}</p>
+  </a>
+  {% endfor %}
+</section>
+{% else %}
+<p class="lead" style="text-align:center;color:var(--muted);max-width:480px;margin:0 auto;">No posts yet. Add Markdown files to <code style="font-size:13px;">published/blog/</code> in vault-shared and push.</p>
+{% endif %}

@@ -1,0 +1,81 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  repository_dispatch:
+    types: [vault-shared-updated]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout blog
+        uses: actions/checkout@v4
+
+      - name: Checkout vault-shared content
+        uses: actions/checkout@v4
+        with:
+          repository: aivalueworx/vault-shared
+          path: _vault-shared
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync posts from vault-shared
+        run: |
+          mkdir -p src/posts/imported
+          rm -f src/posts/imported/*.md 2>/dev/null || true
+          cp _vault-shared/published/blog/*.md src/posts/imported/ 2>/dev/null || true
+          echo "Synced $(ls src/posts/imported/*.md 2>/dev/null | wc -l | tr -d ' ') post(s) from vault-shared"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: aivalueworx-blog
+          directory: _site
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Slack
+        if: success() && github.ref == 'refs/heads/main'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PAGES_SITE_URL: ${{ secrets.PAGES_SITE_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set — skipping Slack notification."
+            exit 0
+          fi
+          jq -n \
+            --arg repo "${{ github.repository }}" \
+            --arg sha "${{ github.sha }}" \
+            --arg actor "${{ github.actor }}" \
+            --arg site "${PAGES_SITE_URL:-}" \
+            --arg source "${{ github.event_name }}" \
+            '{text: (
+              "AIValueWorx blog deployed to Cloudflare Pages\n" +
+              "*Repository:* " + $repo + "\n" +
+              "*SHA:* `" + $sha + "`\n" +
+              "*Actor:* " + $actor +
+              (if $source == "repository_dispatch" then "\n*Trigger:* vault-shared push" else "" end) +
+              (if ($site | length) > 0 then "\n*Site:* " + $site else "" end)
+            )}' | curl -sS -X POST -H 'Content-type: application/json' -d @- "$SLACK_WEBHOOK_URL"

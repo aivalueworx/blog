@@ -1,0 +1,23 @@
+---
+permalink: /blog/feed.xml
+eleventyExcludeFromCollections: true
+date: 2026-04-14
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.siteName | e }}</title>
+  <subtitle>{{ site.description | e }}</subtitle>
+  <link href="{{ site.siteUrl }}/blog/feed.xml" rel="self" type="application/atom+xml"/>
+  <link href="{{ site.siteUrl }}/" rel="alternate" type="text/html"/>
+  <id>{{ site.siteUrl }}/</id>
+  <updated>{% if collections.posts.length %}{{ collections.posts[0].data.date | isoDate }}{% else %}{{ page.date | isoDate }}{% endif %}</updated>
+  {% for post in collections.posts %}
+  <entry>
+    <title>{{ post.data.title | e }}</title>
+    <link href="{{ site.siteUrl }}{{ post.url }}" rel="alternate" type="text/html"/>
+    <id>{{ site.siteUrl }}{{ post.url }}</id>
+    <updated>{{ post.data.date | isoDate }}</updated>
+    <summary>{{ post.data.description | e }}</summary>
+  </entry>
+  {% endfor %}
+</feed>

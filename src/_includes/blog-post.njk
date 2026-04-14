@@ -1,0 +1,14 @@
+---
+layout: blog-base.njk
+---
+<div class="post-wrap">
+  <a href="{{ '/' | url }}" class="back-link">&larr; All posts</a>
+  <header class="post-header glass-panel">
+    <p class="kicker">Article</p>
+    <h1>{{ title }}</h1>
+    <p class="post-meta">{{ date | dateString }}{% if author %} · {{ author }}{% endif %} · {{ content | readTime }}</p>
+  </header>
+  <div class="prose">
+    {{ content | safe }}
+  </div>
+</div>

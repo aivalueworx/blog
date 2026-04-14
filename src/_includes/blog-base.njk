@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if title %}{{ title }} — {% endif %}{{ site.siteName }}</title>
+<meta name="description" content="{{ description or site.description }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet">
+<link rel="alternate" type="application/atom+xml" title="{{ site.siteName }}" href="/blog/feed.xml">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --background: #000000;
+  --foreground: #e6f0ff;
+  --card: #1b2432;
+  --muted: #a9b6cb;
+  --border: #2a3547;
+  --accent: #5b8def;
+  --accent-foreground: #ffffff;
+  --accent-glow: rgba(91, 141, 239, 0.25);
+  --glass: rgba(17, 24, 36, 0.35);
+  --glass-border: rgba(230, 240, 255, 0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+code, pre, kbd, samp {
+  font-family: 'IBM Plex Mono', Menlo, Monaco, 'Courier New', monospace;
+  font-size: 0.92em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* Nav */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+}
+.site-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  color: #000;
+}
+.brand-name {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+.nav-badge {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.nav-links a {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.nav-links a:hover { color: var(--foreground); }
+
+/* Main */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Glass panel (landing page style) */
+.glass-panel {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 28px 24px;
+}
+
+/* Index hero */
+.blog-hero {
+  text-align: center;
+  margin-bottom: 48px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.blog-hero .kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.blog-hero h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.blog-hero .lead {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* Post cards grid */
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.post-card {
+  display: block;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.post-card:hover {
+  border-color: rgba(91, 141, 239, 0.35);
+  background: rgba(91, 141, 239, 0.06);
+}
+.post-card .date {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.post-card h2 {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  color: var(--foreground);
+}
+.post-card .excerpt {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Single post */
+.post-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.post-header {
+  margin-bottom: 36px;
+}
+.post-header .kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.post-header h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.post-meta {
+  font-size: 14px;
+  color: var(--muted);
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 28px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.back-link:hover { color: var(--accent); }
+
+/* Prose */
+.prose {
+  font-weight: 400;
+  color: var(--foreground);
+}
+.prose p { margin-bottom: 1.1em; }
+.prose h2 {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 1.6em 0 0.6em;
+  color: var(--foreground);
+}
+.prose h3 {
+  font-size: 18px;
+  font-weight: 900;
+  margin: 1.4em 0 0.5em;
+}
+.prose h4 { font-size: 16px; font-weight: 700; margin: 1.2em 0 0.4em; }
+.prose ul, .prose ol { margin: 0 0 1em 1.2em; }
+.prose li { margin-bottom: 0.35em; }
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin: 1.2em 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.prose pre {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 1.2em 0;
+}
+.prose code {
+  background: rgba(91, 141, 239, 0.12);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: var(--foreground);
+}
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 1em 0;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 14px;
+}
+.prose th, .prose td {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: left;
+}
+.prose th { background: var(--card); color: var(--foreground); font-weight: 600; }
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 24px;
+  margin-top: auto;
+}
+.site-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer-row {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  .footer-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.footer-brand .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.footer-brand p { font-size: 14px; color: var(--muted); }
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+.footer-links a { font-size: 14px; color: var(--muted); }
+.footer-links a:hover { color: var(--foreground); }
+.footer-copy {
+  border-top: 1px solid var(--border);
+  margin-top: 32px;
+  padding-top: 24px;
+}
+.footer-copy p { font-size: 12px; color: var(--muted); }
+
+.page-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.page-shell main { flex: 1; }
+</style>
+</head>
+<body>
+<div class="page-shell">
+<nav class="site-nav" aria-label="Primary">
+  <div class="site-nav-inner">
+    <div class="brand-row">
+      <a href="{{ '/' | url }}" class="brand-row" style="text-decoration:none;">
+        <span class="brand-mark" aria-hidden="true">V</span>
+        <span class="brand-name">{{ site.brandName }}</span>
+        <span class="nav-badge">Blog</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="{{ '/' | url }}">All posts</a>
+      <a href="{{ site.mainSiteUrl }}">Back to main site</a>
+      <a href="{{ '/blog/feed.xml' | url }}">RSS</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+{{ content | safe }}
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-row">
+      <div class="footer-brand">
+        <div class="row">
+          <span class="brand-mark" aria-hidden="true">V</span>
+          <span class="brand-name" style="font-size:16px;">AIValueWorx</span>
+        </div>
+        <p>{{ site.tagline }}</p>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        {% for link in site.footerLinks %}
+        <a href="{{ link.href }}">{{ link.label }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="footer-copy">
+      <p>&copy; {% year %} AIValueWorx. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+</div>
+</body>
+</html>

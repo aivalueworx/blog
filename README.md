@@ -57,13 +57,17 @@ git push
 
 Pushing `published/blog/` triggers [`trigger-builds.yml`](https://github.com/aivalueworx/vault-shared/blob/main/.github/workflows/trigger-builds.yml), which dispatches a build to this repo. No need to push `blog` for content-only changes.
 
-## Cloudflare Pages
+## Cloudflare Pages (required for deploy)
 
-1. Create a project (e.g. **`aivalueworx-blog`**) — build is done by **GitHub Actions**, not Cloudflare’s Git integration.
-2. Add repository secrets on **`aivalueworx/blog`**:
-   - `CLOUDFLARE_API_TOKEN` — Pages Edit
-   - `CLOUDFLARE_ACCOUNT_ID`
-3. Optional: `SLACK_WEBHOOK_URL`, `PAGES_SITE_URL` (same pattern as strategy-docs).
+The **first** push will fail the deploy step until you add secrets — **CI build** still passes.
+
+1. In Cloudflare → **Workers & Pages** → **Create** → **Pages** → connect nothing; the site is uploaded by GitHub Actions only. Or create an empty project named **`aivalueworx-blog`** (must match `projectName` in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
+2. On GitHub → **`aivalueworx/blog`** → **Settings** → **Secrets and variables** → **Actions**, add (same values as [strategy-docs](https://github.com/aivalueworx/strategy-docs) if you use the same Cloudflare account):
+   - **`CLOUDFLARE_API_TOKEN`** — API token with **Account** → **Cloudflare Pages** → **Edit**
+   - **`CLOUDFLARE_ACCOUNT_ID`** — 32-character account ID (Cloudflare dashboard sidebar)
+3. Optional: **`SLACK_WEBHOOK_URL`**, **`PAGES_SITE_URL`** for Slack messages after deploy.
+
+Re-run the failed workflow (**Actions** → failed run → **Re-run all jobs**) or push any commit to `main`.
 
 Update [`src/_data/site.json`](src/_data/site.json) `siteUrl` and `mainSiteUrl` when you have production URLs.
 

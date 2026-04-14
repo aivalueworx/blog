@@ -71,22 +71,24 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 10px;
 }
-.brand-mark {
-  width: 28px;
-  height: 28px;
-  background: var(--accent);
-  border-radius: 4px;
+.brand-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 900;
-  color: #000;
+  gap: 12px;
+  text-decoration: none;
 }
-.brand-name {
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: var(--foreground);
+.site-logo {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: min(220px, 52vw);
+  object-fit: contain;
+  object-position: left center;
+}
+.site-logo--footer {
+  height: 28px;
+  max-width: 200px;
+  margin-bottom: 4px;
 }
 .nav-badge {
   font-size: 11px;
@@ -349,9 +351,8 @@ main {
 <nav class="site-nav" aria-label="Primary">
   <div class="site-nav-inner">
     <div class="brand-row">
-      <a href="{{ '/' | url }}" class="brand-row" style="text-decoration:none;">
-        <span class="brand-mark" aria-hidden="true">V</span>
-        <span class="brand-name">{{ site.brandName }}</span>
+      <a href="{{ '/' | url }}" class="brand-link">
+        <img class="site-logo" src="{{ '/assets/logo.png' | url }}" alt="AIValueWorx" width="200" height="32" loading="eager" decoding="async" />
         <span class="nav-badge">Blog</span>
       </a>
     </div>
@@ -372,8 +373,7 @@ main {
     <div class="footer-row">
       <div class="footer-brand">
         <div class="row">
-          <span class="brand-mark" aria-hidden="true">V</span>
-          <span class="brand-name" style="font-size:16px;">AIValueWorx</span>
+          <img class="site-logo site-logo--footer" src="{{ '/assets/logo.png' | url }}" alt="AIValueWorx" width="180" height="28" loading="lazy" decoding="async" />
         </div>
         <p>{{ site.tagline }}</p>
       </div>

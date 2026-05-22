@@ -1,14 +1,15 @@
 {
-  "brandName": "AIValueWorx",
-  "siteName": "AIValueWorx Blog",
-  "siteUrl": "https://blog.aivalueworx.pages.dev",
-  "mainSiteUrl": "https://landing-page-production-5e46.up.railway.app",
+  "brandName": "ValueWorx",
+  "siteName": "ValueWorx Blog",
+  "siteUrl": "https://blog.aivalueworx.com",
+  "mainSiteUrl": "https://aivalueworx.com",
   "description": "Insights on AI strategy, governance, and measured business impact.",
-  "defaultAuthor": "AIValueWorx",
+  "defaultAuthor": "AI Value Worx",
   "tagline": "A Goal Atlas × weareCrank partnership",
-  "email": "hello@valuelabai.com",
+  "email": "mike@aivalueworx.com",
   "footerLinks": [
-    { "label": "Privacy", "href": "https://landing-page-production-5e46.up.railway.app/privacy" },
-    { "label": "Terms", "href": "https://landing-page-production-5e46.up.railway.app/terms" }
+    { "label": "Contact", "href": "https://aivalueworx.com/contact/" },
+    { "label": "Privacy", "href": "https://aivalueworx.com/privacy/" },
+    { "label": "Terms", "href": "https://aivalueworx.com/terms/" }
   ]
 }

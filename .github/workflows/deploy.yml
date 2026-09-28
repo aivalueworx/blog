@@ -25,7 +25,7 @@ jobs:
         with:
           repository: aivalueworx/vault-shared
           path: _vault-shared
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.VAULT_SHARED_CHECKOUT_TOKEN }}
 
       - name: Sync posts from vault-shared
         run: |

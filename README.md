@@ -74,8 +74,8 @@ Deploy target is the **AI Value Worx** Cloudflare account (same account as the *
 | **peter@aivalueworx.com** (use this) | `397d163c1b67643b7818aff942767495` | Marketing zone + blog should live here |
 | **peter@wearecrank.com** (legacy) | `5be4b6b581b13c18f518b44ac4768b3d` | Old `aivalueworx-blog` — delete after custom domain is on the new project |
 
-**Live Pages URL (until custom domain):** https://aivalueworx-blog-8lz.pages.dev  
-**Target custom domain:** https://blog.aivalueworx.com — add under **Workers & Pages** → **aivalueworx-blog** → **Custom domains** in account `397d163c…`, then set [`src/_data/site.json`](src/_data/site.json) `siteUrl` to `https://blog.aivalueworx.com`.
+**Production URL:** https://blog.aivalueworx.com (custom domain on **`aivalueworx-blog`**)  
+**Fallback Pages URL:** https://aivalueworx-blog-8lz.pages.dev — use if custom domain DNS is still propagating on your network.
 
 GitHub → **`aivalueworx/blog`** → **Settings** → **Secrets and variables** → **Actions**:
 

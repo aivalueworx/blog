@@ -7,6 +7,7 @@ on:
     branches: [main]
   repository_dispatch:
     types: [vault-shared-updated]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -46,13 +47,12 @@ jobs:
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
-        id: deploy
-        uses: cloudflare/pages-action@v1
+        if: github.event_name != 'pull_request'
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: aivalueworx-blog
-          directory: _site
+          command: pages deploy _site --project-name=aivalueworx-blog
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify Slack

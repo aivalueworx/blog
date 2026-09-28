@@ -67,24 +67,33 @@ Pushing `published/blog/` triggers [`trigger-builds.yml`](https://github.com/aiv
 
 ## Cloudflare Pages (required for deploy)
 
-The **first** push will fail the deploy step until you add secrets — **CI build** still passes.
+Deploy target is the **AI Value Worx** Cloudflare account (same account as the **`aivalueworx.com`** zone). Pages projects **do not move** between accounts — create/deploy **`aivalueworx-blog`** in the correct account and retire the old project elsewhere.
 
-1. In Cloudflare → **Workers & Pages** → **Create** → **Pages** → connect nothing; the site is uploaded by GitHub Actions only. Or create an empty project named **`aivalueworx-blog`** (must match `projectName` in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
-2. On GitHub → **`aivalueworx/blog`** → **Settings** → **Secrets and variables** → **Actions**, add (same values as [strategy-docs](https://github.com/aivalueworx/strategy-docs) if you use the same Cloudflare account):
-   - **`CLOUDFLARE_API_TOKEN`** — API token with **Account** → **Cloudflare Pages** → **Edit**
-   - **`CLOUDFLARE_ACCOUNT_ID`** — 32-character account ID (Cloudflare dashboard sidebar)
-3. Optional: **`SLACK_WEBHOOK_URL`**, **`PAGES_SITE_URL`** for Slack messages after deploy.
+| Account | Account ID | Notes |
+|---------|------------|--------|
+| **peter@aivalueworx.com** (use this) | `397d163c1b67643b7818aff942767495` | Marketing zone + blog should live here |
+| **peter@wearecrank.com** (legacy) | `5be4b6b581b13c18f518b44ac4768b3d` | Old `aivalueworx-blog` — delete after custom domain is on the new project |
 
-Re-run the failed workflow (**Actions** → failed run → **Re-run all jobs**) or push any commit to `main`.
+**Live Pages URL (until custom domain):** https://aivalueworx-blog-8lz.pages.dev  
+**Target custom domain:** https://blog.aivalueworx.com — add under **Workers & Pages** → **aivalueworx-blog** → **Custom domains** in account `397d163c…`, then set [`src/_data/site.json`](src/_data/site.json) `siteUrl` to `https://blog.aivalueworx.com`.
 
-Update [`src/_data/site.json`](src/_data/site.json) `siteUrl` and `mainSiteUrl` when you have production URLs.
+GitHub → **`aivalueworx/blog`** → **Settings** → **Secrets and variables** → **Actions**:
 
-## Custom domain (`aivalueworx.com/blog`)
+| Secret | Purpose |
+|--------|---------|
+| **`CLOUDFLARE_ACCOUNT_ID`** | `397d163c1b67643b7818aff942767495` |
+| **`CLOUDFLARE_API_TOKEN`** | Account token with **Pages Write** (or **Cloudflare Pages → Edit** on classic user tokens) scoped to that account |
+| **`VAULT_SHARED_CHECKOUT_TOKEN`** | PAT with read access to private **`aivalueworx/vault-shared`** (CI checkout of posts) |
+| **`PAGES_SITE_URL`** | Optional — Slack notify URL after deploy |
+| **`SLACK_WEBHOOK_URL`** | Optional |
 
-The marketing site is on Railway; this blog is a separate static site on Cloudflare. Typical approaches:
+CI uses [Direct Upload](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/) via **`cloudflare/wrangler-action`**. The workflow creates the **`aivalueworx-blog`** project in the target account if missing, then runs `pages deploy`.
 
-- **Subdomain:** `blog.aivalueworx.com` → point DNS to Cloudflare Pages (simplest).
-- **Path `/blog` on apex:** use Cloudflare **Workers** or **Transform Rules** to proxy `/blog/*` to the Pages project, or host both behind one Cloudflare zone with routing rules.
+Manual redeploy: **Actions** → **Deploy to Cloudflare Pages** → **Run workflow** (branch **`main`**).
+
+## Custom domain
+
+**Subdomain (recommended):** `blog.aivalueworx.com` on the **`aivalueworx-blog`** project in account **`397d163c…`**. Because the zone is in the same account, Cloudflare can create DNS when you add the custom domain.
 
 ## RSS
 
@@ -92,4 +101,4 @@ Atom feed: **`/blog/feed.xml`** (e.g. `https://<your-pages-domain>/blog/feed.xml
 
 ---
 
-*AIValueWorx · A Goal Atlas × weareCrank partnership*
+*AIValueWorx · A Goal Atlas + weareCrank partnership*
